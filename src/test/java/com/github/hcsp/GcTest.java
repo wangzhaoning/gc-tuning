@@ -19,7 +19,8 @@ public class GcTest {
     // 在这个测试中，测试JVM会出现频繁的老年代的GC
     // 请思考一下为什么，并调整JVM的启动参数，使得老年代GC出现（Full GC/CMS GC）的次数小于3次。
     // 请不要调整-Xms和-Xmx
-    private static final String JVM_ARGS = "-Dfile.encoding=UTF-8 -Xms256m -Xmx256m -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps";
+    private static final String JVM_ARGS = "-Dfile.encoding=UTF-8 -Xms256m -Xmx256m -XX:+UseConcMarkSweepGC" +
+            " -XX:NewSize=150m -XX:SurvivorRatio=10 -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps";
 
     @Test
     public void isJava8() {
@@ -43,8 +44,14 @@ public class GcTest {
                 Assertions.assertEquals(200, statusCode);
             }
             String gcOutput = application.output.toString();
-            Assertions.assertTrue(StringUtils.countMatches(gcOutput, "Full GC") < 3);
-            Assertions.assertTrue(StringUtils.countMatches(gcOutput, "CMS-concurrent-sweep-start") < 3);
+
+            int full_gc = StringUtils.countMatches(gcOutput, "Full GC");
+            System.out.println("Full GC次数：" + full_gc);
+            Assertions.assertTrue(full_gc < 3);
+
+            int cms = StringUtils.countMatches(gcOutput, "CMS-concurrent-sweep-start");
+            System.out.println("CMS GC次数：" + cms);
+            Assertions.assertTrue(cms < 3);
         } finally {
             application.kill();
         }
