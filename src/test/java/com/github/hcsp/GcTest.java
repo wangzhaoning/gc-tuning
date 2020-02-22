@@ -19,7 +19,7 @@ public class GcTest {
     // 在这个测试中，测试JVM会出现频繁的老年代的GC
     // 请思考一下为什么，并调整JVM的启动参数，使得老年代GC出现（Full GC/CMS GC）的次数小于3次。
     // 请不要调整-Xms和-Xmx
-    private static final String JVM_ARGS = "-Dfile.encoding=UTF-8 -Xms256m -Xmx256m -Xmn130m -XX:SurvivorRatio=100 -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps";
+    private static final String JVM_ARGS = "-Dfile.encoding=UTF-8 -Xms256m -Xmx256m -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps";
 
     @Test
     public void isJava8() {
